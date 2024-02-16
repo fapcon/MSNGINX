@@ -9,7 +9,6 @@ services:
       - mylocal
   user:
     build: .
-    container_name: userng
     networks:
       - mylocal
     deploy:

@@ -26,9 +26,9 @@ func main() {
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
-	
+
 	go func(r *chi.Mux) {
-		fmt.Println("Запусе сервера auth")
+		fmt.Println("Запуск сервера auth")
 		http.ListenAndServe(":8082", r)
 		defer wg.Done()
 	}(r)
