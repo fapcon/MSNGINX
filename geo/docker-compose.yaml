@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  nginxgeo:
+    image: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - mylocal
+  geo:
+    build: .
+    networks:
+      - mylocal
+    deploy:
+      mode: replicated
+      replicas: 3
+  redis:
+    image: redis
+    networks:
+      - mylocal
+networks:
+  mylocal:
+    external: true

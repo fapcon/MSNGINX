@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/fapcon/MSHUGOprotos v0.0.0-20240211082912-602d98767321
+	github.com/go-chi/chi v1.5.5
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	golang.org/x/crypto v0.19.0

@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  nginxuser:
+    image: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - mylocal
+  user:
+    build: .
+    container_name: userng
+    networks:
+      - mylocal
+    deploy:
+      mode: replicated
+      replicas: 3
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: userpostgres
+      POSTGRES_DB: userserv
+    networks:
+      - mylocal
+networks:
+  mylocal:
+    external: true

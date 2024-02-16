@@ -13,6 +13,10 @@ import (
 type GeoService struct {
 }
 
+func NewGeoService() *GeoService {
+	return &GeoService{}
+}
+
 func (g *GeoService) Search(input string) ([]byte, error) {
 	var data = strings.NewReader(fmt.Sprintf("[ \"%s\" ]", input))
 

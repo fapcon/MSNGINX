@@ -1,15 +1,21 @@
 package main
 
 import (
+	"fmt"
 	userpr "github.com/fapcon/MSHUGOprotos/protos/user/gen"
+	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"net/http"
+	"sync"
 	"time"
+	cnt "user/internal/controller"
 	"user/internal/grpc/user"
 	"user/internal/repository"
+	"user/internal/router"
 	"user/internal/service"
 )
 
@@ -46,16 +52,32 @@ func main() {
 
 	serviceUser := user.NewServiceUser(userService)
 
-	lis, err := net.Listen("tcp", ":44971")
-	if err != nil {
-		log.Fatalf("Failed to listen on port %s: %v", "50053", err)
-	}
-	grpcServer := grpc.NewServer()
+	usercnt := cnt.NewHandleUser(userService)
 
-	userpr.RegisterUserServiceServer(grpcServer, serviceUser)
+	r := router.Route(usercnt)
 
-	log.Print("Starting gRPC server user...")
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("Failed to serve gRPC server: %v", err)
-	}
+	w := sync.WaitGroup{}
+	w.Add(2)
+	go func(r *chi.Mux) {
+		fmt.Println("Запуск user сервера 8083")
+		http.ListenAndServe(":8083", r)
+		defer w.Done()
+	}(r)
+
+	go func() {
+		lis, err := net.Listen("tcp", ":44971")
+		if err != nil {
+			log.Fatalf("Failed to listen on port %s: %v", "44971", err)
+		}
+		grpcServer := grpc.NewServer()
+
+		userpr.RegisterUserServiceServer(grpcServer, serviceUser)
+
+		log.Print("Starting gRPC server user...")
+		if err := grpcServer.Serve(lis); err != nil {
+			log.Fatalf("Failed to serve gRPC server: %v", err)
+		}
+		defer w.Done()
+	}()
+	w.Wait()
 }

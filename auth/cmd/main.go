@@ -21,9 +21,12 @@ func main() {
 	uscl := grpcclients.NewClientUser()
 	authservice := service.NewAuthService(uscl)
 	authcnt := cnt.NewHandleAuth(authservice)
+
 	r := router.Route(authcnt)
+
 	wg := sync.WaitGroup{}
 	wg.Add(2)
+	
 	go func(r *chi.Mux) {
 		fmt.Println("Запусе сервера auth")
 		http.ListenAndServe(":8082", r)
