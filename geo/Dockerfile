@@ -12,7 +12,9 @@ FROM alpine
 
 COPY --from=builder /app/main /main
 
+EXPOSE 8071
 EXPOSE 8081
+EXPOSE 8091
 EXPOSE 44973
 
 CMD ["/main"]

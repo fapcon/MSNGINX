@@ -7,14 +7,18 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
       - mylocal
-  auth:
+  auth1:
     build: .
     networks:
       - mylocal
-    deploy:
-      mode: replicated
-      replicas: 3
-
+  auth2:
+    build: .
+    networks:
+      - mylocal
+  auth3:
+    build: .
+    networks:
+      - mylocal
 networks:
   mylocal:
     external: true
